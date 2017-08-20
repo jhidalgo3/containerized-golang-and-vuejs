@@ -14,9 +14,9 @@ RUN go get gopkg.in/mgo.v2
 RUN go get github.com/garyburd/redigo/redis
 RUN go get github.com/gorilla/mux
 RUN go get github.com/gorilla/handlers
-RUN go get github.com/jbelmont/containerized-golang-and-vuejs/routes
-RUN go get github.com/jbelmont/containerized-golang-and-vuejs/handlers
-RUN go get github.com/jbelmont/containerized-golang-and-vuejs/model
-RUN go get github.com/jbelmont/containerized-golang-and-vuejs/redis
+RUN go get github.com/jhidalgo3/containerized-golang-and-vuejs/routes
+RUN go get github.com/jhidalgo3/containerized-golang-and-vuejs/handlers
+RUN go get github.com/jhidalgo3/containerized-golang-and-vuejs/model
+RUN go get github.com/jhidalgo3/containerized-golang-and-vuejs/redis
 
 RUN go build

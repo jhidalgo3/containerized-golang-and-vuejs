@@ -1,4 +1,4 @@
-FROM mhart/alpine-node:8.0.0
+FROM mhart/alpine-node:6.11.2
 
 LABEL maintainer "marcelbelmont@gmail.com"
 
@@ -7,8 +7,13 @@ ENV appDir /var/www/app
 
 RUN apk add --no-cache make gcc g++ python bash bzr git subversion openssh-client ca-certificates
 
+
 # Set the work directory
 RUN mkdir -p ${appDir}
+#RUN adduser -D -u 1000 user
+#RUN chown -R user:user ${appDir}
+#USER user
+
 WORKDIR ${appDir}
 
 COPY . ${appDir}

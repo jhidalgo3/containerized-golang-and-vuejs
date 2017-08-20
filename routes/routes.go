@@ -7,7 +7,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/jbelmont/containerized-golang-and-vuejs/handlers"
+	"github.com/jhidalgo3/containerized-golang-and-vuejs/handlers"
 )
 
 type Route struct {
@@ -64,7 +64,7 @@ var routes = Routes{
 	},
 	Route{
 		"POST",
-		"/addUser",
+		"/users",
 		"AddUser",
 		handlers.AddUser,
 	},

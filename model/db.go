@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -22,18 +23,14 @@ func getDial() string {
 	} else {
 		dial = "localhost"
 	}
+	fmt.Println(dial)
 	return dial
 }
 
 // CreateDBSession creates mgo session
 func CreateDBSession() *mgo.Session {
 	var err error
-	var dial string
-	if os.Getenv("MONGO_URL") == "db" {
-		dial = os.Getenv("MONGO_URL")
-	} else {
-		dial = "localhost"
-	}
+	var dial = getDial()
 	session, err = mgo.Dial(dial)
 	defer session.Close()
 	anotherSession := session.Copy()

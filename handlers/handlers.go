@@ -5,13 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
-	"strconv"
 
 	"gopkg.in/mgo.v2/bson"
 
-	"github.com/garyburd/redigo/redis"
-	"github.com/jbelmont/containerized-golang-and-vuejs/model"
+	"github.com/jhidalgo3/containerized-golang-and-vuejs/model"
 )
 
 // UsersIndex returns index page with users
@@ -28,48 +25,19 @@ type User struct {
 	Gender    string `json:"gender"`
 }
 
-// Connect returns redis connection
-func Connect() redis.Conn {
-	var err error
-	connect, err := redis.Dial("tcp", os.Getenv("REDIS_URL"))
-	if err != nil {
-		return nil
-	}
-	return connect
-}
-
 // GetUsers returns json payload with users
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	var users []model.Users
 	var payload []byte
 	var err error
-	connect := Connect()
-	reply, err := connect.Do("KEYS", "user:*")
-	values, _ := redis.Strings(reply, err)
-	if values != nil {
-		var users2 []User
-		var user User
-		for _, val := range values {
-			hash, err := connect.Do("HGETALL", val)
-			if err != nil {
-				log.Fatal(err, "not ok")
-			}
-			hashVal, _ := redis.StringMap(hash, err)
-			id, _ := strconv.Atoi(hashVal["id"])
-			user = User{
-				ID:        id,
-				FirstName: hashVal["firstname"],
-				LastName:  hashVal["lastname"],
-				Email:     hashVal["email"],
-				Gender:    hashVal["gender"],
-			}
-			users2 = append(users2, user)
-		}
-		payload, err = json.Marshal(users2)
-	} else {
-		users = model.GetUsers()
-		payload, err = json.Marshal(users)
-	}
+
+	//users = model.GetUsers()
+
+	context := model.GetContext()
+	c := context.DBCollection()
+	c.Find(nil).All(&users)
+
+	payload, err = json.Marshal(users)
 
 	if err != nil {
 		fmt.Println(err)
@@ -104,12 +72,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("error saving user")
 		return
 	}
-	connect := Connect()
-	key := "user:" + strconv.Itoa(u.ID)
-	_, err3 := connect.Do("HMSET", key, "id", u.ID, "firstname", u.FirstName, "lastname", u.LastName, "email", u.Email, "gender", u.Gender)
-	if err3 != nil {
-		log.Fatal("Redis did not save value")
-	}
+
 	code := struct {
 		StatusCode int
 	}{
@@ -164,13 +127,7 @@ func DeleteUserByID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err2.Error(), 500)
 		return
 	}
-	connect := Connect()
-	key := "user:" + strconv.Itoa(payload.ID)
-	_, err3 := connect.Do("DEL", key)
-	if err3 != nil {
-		http.Error(w, err3.Error(), 500)
-		return
-	}
+
 	code := struct {
 		StatusCode int
 	}{

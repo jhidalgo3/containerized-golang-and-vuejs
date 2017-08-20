@@ -5,18 +5,19 @@ services:
     command: mongod --smallfiles --quiet --logpath=/dev/null --dbpath=/data/db
     volumes:
       - ./mongo_data:/data/db
-  redis:
-    image: redis:3.2.9
-    volumes:
-      - ./redis.conf:/usr/local/etc/redis/redis.conf
-    ports:
-      - "6379:6379"
+#  redis:
+#    image: redis:3.2.9
+#    volumes:
+#      - ./redis.conf:/usr/local/etc/redis/redis.conf
+#    ports:
+#      - "6379:6379"
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
     environment:
       DOCKER: "true"
+#    user: user
     volumes:
       - .:/var/www/app/:rw
       - /var/www/app/node_modules
@@ -45,11 +46,11 @@ services:
     volumes:
       - .:/var/www/app/:rw
     ports:
-      - "3001:8081"
+      - "3001:3001"
     environment:
       MONGO_URL: "db"
       REDIS_URL: "redis:6379"
     restart: always
     links:
       - db
-      - redis
+#      - redis

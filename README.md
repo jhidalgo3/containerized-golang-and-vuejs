@@ -22,6 +22,13 @@ docker pull redis:3.2.9
 docker pull mhart/alpine-node:8.0.0
 ```
 
+### DATABASE
+
+```
+docker run --name mongo -p 27017:27017 -d mongo
+```
+
+
 ### Assumptions:
 
 * During this workshop the following ports will be used: `8080`, `8081`, `3000`, `3001`.
